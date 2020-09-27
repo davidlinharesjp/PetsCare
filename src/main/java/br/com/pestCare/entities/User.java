@@ -32,16 +32,16 @@ public class User implements Serializable {
 	@Column(name = "id_user", nullable = false)
 	private Long id;
 
-	@Column(name = "nm_user", nullable = true, length = 100)
+	@Column(nullable = true, length = 100)
 	private String name;
 
-	@Column(name = "nm_email", nullable = true, length = 100)
+	@Column(nullable = true, length = 100)
 	private String email;
 
-	@Column(name = "nu_phone", nullable = true, length = 50)
+	@Column(nullable = true, length = 50)
 	private String phone;
 
-	@Column(name = "key_pass", nullable = true, length = 20)
+	@Column(nullable = true, length = 20)
 	private String password;
 
 	@Column(name = "ts_last_update", insertable = true, updatable = true)
