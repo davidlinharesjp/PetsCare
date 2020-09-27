@@ -8,6 +8,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.pestCare.entities.User;
@@ -25,6 +27,15 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
+	public Page<User> findAllPagination(Pageable pagination) {
+		Page<User> pageUser = userRepository.findAll(pagination);
+		return pageUser;
+	}
+
+	public Page<User> findAllPagination(Pageable pagination, String searchExpression) {
+		return userRepository.findByName(searchExpression, pagination);
+	}
+
 	public User findById(Long id) {
 		Optional<User> opUser = userRepository.findById(id);
 		return opUser.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -33,6 +44,15 @@ public class UserService {
 	public User insert(User obj) {
 		return userRepository.save(obj);
 	}
+
+	public User getOne(long id) {
+		try {
+			return userRepository.getOne(id);
+		} catch (ResourceNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
+
+	};
 
 	public void delete(Long id) {
 		try {
@@ -49,8 +69,8 @@ public class UserService {
 			User user = userRepository.getOne(id);
 			updateDate(user, newUser);
 			return userRepository.save(user);
-			
-		}catch (EntityNotFoundException e) {
+
+		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
@@ -61,4 +81,5 @@ public class UserService {
 		user.setPhone(newUser.getPhone());
 
 	}
+
 }
