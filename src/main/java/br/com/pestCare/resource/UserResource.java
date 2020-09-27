@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -40,15 +42,16 @@ public class UserResource {
 
 	@RequestMapping(value = "/findAllPagination")
 	@GetMapping
-	public ResponseEntity<Page<UserDTO>> findAllPagination(@RequestParam String searchExpression,
-			@PageableDefault(sort = "id", direction = Direction.DESC) Pageable pagination) {
-
-		if (searchExpression.equals("")) {
-			Page<User> list = userService.findAllPagination(pagination);
-			return ResponseEntity.ok().body(UserDTO.convertPagination(list));
+	@Cacheable(value = "listUsersPagination")//USER CACHE EM METODOS QE NÃO SERÃO MUITO ALTERADOS (updates , insert ou delete)
+	public ResponseEntity<Page<UserDTO>> findAllPagination(@RequestParam(required = false) String searchExpression,
+			@PageableDefault(sort = "id", direction = Direction.DESC,page = 1, size = 10) Pageable pagination) {
+		Page<User> pageUsers = null;
+		if (searchExpression != null && !searchExpression.equals("")) {
+			pageUsers = userService.findAllPagination(pagination, searchExpression);
+			return ResponseEntity.ok().body(UserDTO.convertPagination(pageUsers));
 		} else {
-			Page<User> list = userService.findAllPagination(pagination, searchExpression);
-			return ResponseEntity.ok().body(UserDTO.convertPagination(list));
+			pageUsers = userService.findAllPagination(pagination);
+			return ResponseEntity.ok().body(UserDTO.convertPagination(pageUsers));
 		}
 	}
 
@@ -61,6 +64,7 @@ public class UserResource {
 	}
 
 	@PostMapping
+	@CacheEvict(value = "listUsersPagination", allEntries = true)
 	public ResponseEntity<UserDTO> insert(@RequestBody User user) {
 		user = userService.insert(user);
 		/*
@@ -76,12 +80,14 @@ public class UserResource {
 	}
 
 	@DeleteMapping(value = "/{id}")
+	@CacheEvict(value = "listUsersPagination", allEntries = true)
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		userService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping(value = "/{id}")
+	@CacheEvict(value = "listUsersPagination", allEntries = true)
 	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
 		user = userService.update(id, user);
 		return ResponseEntity.ok().body(user);

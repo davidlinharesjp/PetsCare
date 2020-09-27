@@ -33,7 +33,7 @@ public class UserService {
 	}
 
 	public Page<User> findAllPagination(Pageable pagination, String searchExpression) {
-		return userRepository.findByName(searchExpression, pagination);
+		return userRepository.findByNameContainsIgnoreCase(searchExpression, pagination);
 	}
 
 	public User findById(Long id) {
