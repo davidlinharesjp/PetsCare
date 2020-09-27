@@ -2,14 +2,17 @@ package br.com.pestCare.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -18,12 +21,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_user")
 @SequenceGenerator(name = "sq_user", sequenceName = "sq_user", initialValue = 1, allocationSize = 1)
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,16 +48,19 @@ public class User implements Serializable {
 	@Column(nullable = true, length = 50)
 	private String phone;
 
-	@Column(nullable = true, length = 20)
-	private String password;
+	@Column(nullable = true)
+	private String key_password;
 
-	@Column(name = "ts_last_update", insertable = true, updatable = true)
+	@Column(insertable = true, updatable = true)
 	@Temporal(value = TemporalType.TIMESTAMP)
-	private Date lastUpdate;
+	private Date last_update;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Order> orders = new ArrayList<>();
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Profile> profiles = new ArrayList<>();
 
 	public User() {
 		super();
@@ -62,17 +72,17 @@ public class User implements Serializable {
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
-		this.password = password;
+		this.key_password = password;
 	}
 
 	@PreUpdate
 	public void onUpdate() {
-		this.lastUpdate = new Date();
+		this.last_update = new Date();
 	}
 
 	@PrePersist
 	public void onInsert() {
-		this.lastUpdate = new Date();
+		this.last_update = new Date();
 	}
 
 	public Long getId() {
@@ -107,12 +117,14 @@ public class User implements Serializable {
 		this.phone = phone;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getKey_password() {
+		return key_password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setKey_password(String key_password) {
+		BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+		this.key_password = encode.encode(key_password);
+
 	}
 
 	public List<Order> getOrders() {
@@ -126,7 +138,7 @@ public class User implements Serializable {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((key_password == null) ? 0 : key_password.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 		return result;
 	}
@@ -155,10 +167,10 @@ public class User implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (password == null) {
-			if (other.password != null)
+		if (key_password == null) {
+			if (other.key_password != null)
 				return false;
-		} else if (!password.equals(other.password))
+		} else if (!key_password.equals(other.key_password))
 			return false;
 		if (phone == null) {
 			if (other.phone != null)
@@ -170,8 +182,43 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", password=" + password
-				+ "]";
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", password="
+				+ key_password + "]";
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.profiles;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.key_password;
 	}
 
 }
