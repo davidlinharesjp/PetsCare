@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.pestCare.entities.User;
@@ -41,8 +42,9 @@ public class UserService {
 		return opUser.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public User insert(User obj) {
-		return userRepository.save(obj);
+	public User insert(User user) {
+		user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));
+		return userRepository.save(user);
 	}
 
 	public User getOne(long id) {

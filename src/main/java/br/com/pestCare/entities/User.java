@@ -23,7 +23,6 @@ import javax.persistence.TemporalType;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -122,13 +121,24 @@ public class User implements Serializable, UserDetails {
 	}
 
 	public void setKey_password(String key_password) {
-		BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-		this.key_password = encode.encode(key_password);
+		this.key_password = key_password;
+	}
 
+
+	public List<Profile> getProfiles() {
+		return profiles;
+	}
+
+	public void setProfiles(List<Profile> profiles) {
+		this.profiles = profiles;
 	}
 
 	public List<Order> getOrders() {
 		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 	@Override
@@ -188,7 +198,12 @@ public class User implements Serializable, UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.profiles;
+		return  this.profiles;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.getKey_password();
 	}
 
 	@Override
@@ -215,10 +230,4 @@ public class User implements Serializable, UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
-	@Override
-	public String getPassword() {
-		return this.key_password;
-	}
-
 }

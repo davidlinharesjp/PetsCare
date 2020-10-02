@@ -12,7 +12,7 @@ import br.com.pestCare.entities.User;
 import br.com.pestCare.repository.UserRepository;
 
 @Service
-public class AutenticationService implements UserDetailsService {
+public class AuthenticationService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
