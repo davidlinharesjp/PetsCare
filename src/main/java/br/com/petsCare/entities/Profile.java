@@ -22,7 +22,7 @@ public class Profile implements Serializable, GrantedAuthority {
 	public Long getId() {
 		return id;
 	}
-
+ 
 	public void setId(Long id) {
 		this.id = id;
 	}

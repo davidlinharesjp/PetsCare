@@ -1,6 +1,7 @@
 package br.com.petsCare.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import br.com.petsCare.entities.form.LoginForm;
 
 @RestController
 @RequestMapping("/auth")
+@Profile("prod")
 public class AuthenticationController {
 
 	@Autowired
