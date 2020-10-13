@@ -1,0 +1,137 @@
+[
+  {
+    "id_state": 11,
+    "initials": "RO",
+    "name": "Rondônia"
+  },
+  {
+    "id_state": 12,
+    "initials": "AC",
+    "name": "Acre"
+  },
+  {
+    "id_state": 13,
+    "initials": "AM",
+    "name": "Amazonas"
+  },
+  {
+    "id_state": 14,
+    "initials": "RR",
+    "name": "Roraima"
+  },
+  {
+    "id_state": 15,
+    "initials": "PA",
+    "name": "Pará"
+  },
+  {
+    "id_state": 16,
+    "initials": "AP",
+    "name": "Amapá"
+  },
+  {
+    "id_state": 17,
+    "initials": "TO",
+    "name": "Tocantins"
+  },
+  {
+    "id_state": 21,
+    "initials": "MA",
+    "name": "Maranhão"
+  },
+  {
+    "id_state": 22,
+    "initials": "PI",
+    "name": "Piauí"
+  },
+  {
+    "id_state": 23,
+    "initials": "CE",
+    "name": "Ceará"
+  },
+  {
+    "id_state": 24,
+    "initials": "RN",
+    "name": "Rio Grande do Norte"
+  },
+  {
+    "id_state": 25,
+    "initials": "PB",
+    "name": "Paraíba"
+  },
+  {
+    "id_state": 26,
+    "initials": "PE",
+    "name": "Pernambuco"
+  },
+  {
+    "id_state": 27,
+    "initials": "AL",
+    "name": "Alagoas"
+  },
+  {
+    "id_state": 28,
+    "initials": "SE",
+    "name": "Sergipe"
+  },
+  {
+    "id_state": 29,
+    "initials": "BA",
+    "name": "Bahia"
+  },
+  {
+    "id_state": 31,
+    "initials": "MG",
+    "name": "Minas Gerais"
+  },
+  {
+    "id_state": 32,
+    "initials": "ES",
+    "name": "Espírito Santo"
+  },
+  {
+    "id_state": 33,
+    "initials": "RJ",
+    "name": "Rio de Janeiro"
+  },
+  {
+    "id_state": 35,
+    "initials": "SP",
+    "name": "São Paulo"
+  },
+  {
+    "id_state": 41,
+    "initials": "PR",
+    "name": "Paraná"
+  },
+  {
+    "id_state": 42,
+    "initials": "SC",
+    "name": "Santa Catarina"
+  },
+  {
+    "id_state": 43,
+    "initials": "RS",
+    "name": "Rio Grande do Sul"
+  },
+  {
+    "id_state": 50,
+    "initials": "MS",
+    "name": "Mato Grosso do Sul"
+  },
+  {
+    "id_state": 51,
+    "initials": "MT",
+    "name": "Mato Grosso"
+  },
+  {
+    "id_state": 52,
+    "initials": "GO",
+    "name": "Goiás"
+  },
+  {
+    "id_state": 53,
+    "initials": "DF",
+    "name": "Distrito Federal"
+  }
+]
