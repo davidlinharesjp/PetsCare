@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,7 +25,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
@@ -65,8 +66,11 @@ public class User implements Serializable, UserDetails {
 	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
 	private Address address;
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = true, length = 20)
 	private String cpfCnpj;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Pet> pets = new HashSet<>();
 
 	@Column(insertable = true, updatable = true)
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -83,6 +87,17 @@ public class User implements Serializable, UserDetails {
 		this.email = email;
 		this.phone = phone;
 		this.key_password = password;
+	}
+	
+	public void AddPet(Pet pet) {
+		pets.add(pet);
+		pet.setUser(this);
+		
+	}
+	
+	public void RemovePet(Pet pet) {
+		pets.remove(pet);
+		pet.setUser(null);
 	}
 
 	@PreUpdate
@@ -149,6 +164,11 @@ public class User implements Serializable, UserDetails {
 
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
+	}
+	
+
+	public Set<Pet> getPets() {
+		return pets;
 	}
 
 	@Override
