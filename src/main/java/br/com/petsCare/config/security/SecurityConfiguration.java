@@ -49,8 +49,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/user").permitAll()
 				.antMatchers(HttpMethod.GET, "/user/findAllPagination/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/user/findAll").permitAll()
 				.antMatchers(HttpMethod.GET, "/user/*").permitAll()
-				.antMatchers(HttpMethod.POST, "/user").permitAll()				
+				.antMatchers(HttpMethod.GET, "/address/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/user/").permitAll()				
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
 				.antMatchers(HttpMethod.DELETE, "/user/*").hasRole("ADMIN")
 				.anyRequest().authenticated().and().csrf().disable().sessionManagement()

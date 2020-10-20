@@ -48,13 +48,17 @@ public class Product implements Serializable {
 	private String imgUrl;
 
 	@ManyToMany
-	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name= "fk_product"), inverseJoinColumns = @JoinColumn(name="fk_category"))
+	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_category"))
 	private Set<Category> categories = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(name = "tb_product_suppliers", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_supplier"))
+	private Set<Supplier> suppliers = new HashSet<>();
 
 	@Column(name = "ts_last_update", insertable = true, updatable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
-	
+
 	@OneToMany(mappedBy = "id.product")
 	private Set<OrderItem> items = new HashSet<>();
 
@@ -128,11 +132,11 @@ public class Product implements Serializable {
 	public Set<Category> getCategories() {
 		return categories;
 	}
-	
+
 	@JsonIgnore
-	public Set<Order> getOrders(){
+	public Set<Order> getOrders() {
 		Set<Order> set = new HashSet<>();
-		for (OrderItem item: items) {
+		for (OrderItem item : items) {
 			set.add(item.getOrder());
 		}
 		return set;

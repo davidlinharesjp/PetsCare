@@ -4,16 +4,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -21,6 +26,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -38,21 +44,16 @@ public class User implements Serializable, UserDetails {
 	@Column(name = "id_user", nullable = false)
 	private Long id;
 
-	@Column(nullable = true, length = 100)
+	@Column(nullable = false, length = 100)
 	private String name;
 
-	@Column(nullable = true, length = 100)
+	@Column(nullable = false, length = 100)
 	private String email;
 
-	@Column(nullable = true, length = 50)
+	@Length(max = 50)
 	private String phone;
 
-	@Column(nullable = true)
 	private String key_password;
-
-	@Column(insertable = true, updatable = true)
-	@Temporal(value = TemporalType.TIMESTAMP)
-	private Date last_update;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
@@ -60,6 +61,20 @@ public class User implements Serializable, UserDetails {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
+	private Address address;
+
+	@Column(nullable = true, length = 20)
+	private String cpfCnpj;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Pet> pets = new HashSet<>();
+
+	@Column(insertable = true, updatable = true)
+	@Temporal(value = TemporalType.TIMESTAMP)
+	private Date last_update;
 
 	public User() {
 		super();
@@ -72,6 +87,17 @@ public class User implements Serializable, UserDetails {
 		this.email = email;
 		this.phone = phone;
 		this.key_password = password;
+	}
+	
+	public void AddPet(Pet pet) {
+		pets.add(pet);
+		pet.setUser(this);
+		
+	}
+	
+	public void RemovePet(Pet pet) {
+		pets.remove(pet);
+		pet.setUser(null);
 	}
 
 	@PreUpdate
@@ -124,7 +150,6 @@ public class User implements Serializable, UserDetails {
 		this.key_password = key_password;
 	}
 
-
 	public List<Profile> getProfiles() {
 		return profiles;
 	}
@@ -139,6 +164,11 @@ public class User implements Serializable, UserDetails {
 
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
+	}
+	
+
+	public Set<Pet> getPets() {
+		return pets;
 	}
 
 	@Override
@@ -198,7 +228,7 @@ public class User implements Serializable, UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return  this.profiles;
+		return this.profiles;
 	}
 
 	@Override

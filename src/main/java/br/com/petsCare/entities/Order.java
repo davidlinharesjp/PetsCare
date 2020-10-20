@@ -51,6 +51,7 @@ public class Order implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
 
+
 	@Column(name = "en_order_status")
 	private Integer orderStatus;
 
