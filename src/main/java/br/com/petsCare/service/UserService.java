@@ -81,6 +81,8 @@ public class UserService {
 		user.setName(newUser.getName());
 		user.setEmail(newUser.getEmail());
 		user.setPhone(newUser.getPhone());
+		user.setEmail(newUser.getEmail());
+		
 
 	}
 

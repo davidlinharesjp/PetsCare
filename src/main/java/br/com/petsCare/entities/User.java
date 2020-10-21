@@ -68,7 +68,7 @@ public class User implements Serializable, UserDetails {
 
 	@Column(nullable = true, length = 20)
 	private String cpfCnpj;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Pet> pets = new HashSet<>();
 
@@ -88,13 +88,13 @@ public class User implements Serializable, UserDetails {
 		this.phone = phone;
 		this.key_password = password;
 	}
-	
+
 	public void AddPet(Pet pet) {
 		pets.add(pet);
 		pet.setUser(this);
-		
+
 	}
-	
+
 	public void RemovePet(Pet pet) {
 		pets.remove(pet);
 		pet.setUser(null);
@@ -165,10 +165,29 @@ public class User implements Serializable, UserDetails {
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
-	
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public String getCpfCnpj() {
+		return cpfCnpj;
+	}
+
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
+	}
 
 	public Set<Pet> getPets() {
 		return pets;
+	}
+
+	public void setPets(Set<Pet> pets) {
+		this.pets = pets;
 	}
 
 	@Override
