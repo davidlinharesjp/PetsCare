@@ -75,4 +75,8 @@ public class SupplierService {
 		supplier.setAddress(newSupplier.getAddress());
 
 	}
+
+	public Supplier insert(Supplier supplier) {
+		return supplierRepository.save(supplier);
+	}
 }
