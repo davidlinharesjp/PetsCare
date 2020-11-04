@@ -35,7 +35,7 @@ public class Product implements Serializable {
 	@GeneratedValue(generator = "sq_product", strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "nm_product", length = 100, nullable = false)
+	@Column(name = "nm_product", length = 100, nullable = false, unique = true)
 	private String name;
 
 	@Column(name = "nm_description", length = 255)

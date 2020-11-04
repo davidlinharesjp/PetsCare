@@ -37,8 +37,7 @@ public class AddressResource {
 	@RequestMapping(value = "/citys")
 	@Cacheable(value = "list/citys")
 	public ResponseEntity<List<City>> findAllCity(String initials){
-		List<City> citys = cityRepository.findByState_Initials(initials);
-		
+		List<City> citys = cityRepository.findByState_Initials(initials);		
 		return ResponseEntity.ok().body(citys);
 	}
 
