@@ -119,9 +119,4 @@ public class Category implements Serializable {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "Category [id=" + id + ", name=" + name + "]";
-	}
-
 }
