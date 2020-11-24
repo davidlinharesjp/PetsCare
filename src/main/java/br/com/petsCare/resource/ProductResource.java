@@ -1,13 +1,20 @@
 package br.com.petsCare.resource;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.petsCare.entities.Product;
 import br.com.petsCare.service.ProductService;
@@ -31,4 +38,28 @@ public class ProductResource {
 		Product product = productService.findById(id);
 		return ResponseEntity.ok().body(product);
 	}
+	
+	@PostMapping(value = "/insert")
+	public ResponseEntity<Product> insert(@RequestBody Product product) {
+		product = productService.insert(product);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/product/{id}").buildAndExpand(product.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(product);
+	}
+	
+	
+	@DeleteMapping(value = "/{id}")
+	@CacheEvict(value = "listProductsPagination", allEntries = true)
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		productService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping(value = "/{id}")
+	@CacheEvict(value = "listProductsPagination", allEntries = true)
+	public ResponseEntity<Product> update(@RequestBody Product product) {
+		product = productService.update(product);
+		return ResponseEntity.ok().body(product);
+	}
+
 }

@@ -3,6 +3,7 @@ package br.com.petsCare.resource;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class AddressResource {
 	
 	@GetMapping
 	@RequestMapping(value = "/states")
+	@Cacheable(value = "listStates" )
 	public ResponseEntity<List<State>> findAllStates(){
 		List<State> states = stateRepository.findAll();
 		return ResponseEntity.ok().body(states);
@@ -33,9 +35,9 @@ public class AddressResource {
 	
 	@GetMapping
 	@RequestMapping(value = "/citys")
+	@Cacheable(value = "list/citys")
 	public ResponseEntity<List<City>> findAllCity(String initials){
-		List<City> citys = cityRepository.findByState_Initials(initials);
-		
+		List<City> citys = cityRepository.findByState_Initials(initials);		
 		return ResponseEntity.ok().body(citys);
 	}
 
