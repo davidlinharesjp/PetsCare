@@ -47,10 +47,12 @@ public class Product implements Serializable {
 	@Column(name = "nm_url_img")
 	private String imgUrl;
 
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_category"))
 	private Set<Category> categories = new HashSet<>();
 
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "tb_product_suppliers", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_supplier"))
 	private Set<Supplier> suppliers = new HashSet<>();
@@ -59,6 +61,7 @@ public class Product implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "id.product")
 	private Set<OrderItem> items = new HashSet<>();
 
