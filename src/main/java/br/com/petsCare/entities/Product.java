@@ -3,6 +3,7 @@ package br.com.petsCare.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -84,6 +85,16 @@ public class Product implements Serializable {
 		this.imgUrl = imgUrl;
 	}
 
+	public Product(Optional<Product> prod) {
+		super();
+		this.id = prod.get().getId();
+		this.name = prod.get().getName();
+		this.description = prod.get().getDescription();
+		this.price = prod.get().getPrice();
+		this.imgUrl = prod.get().getImgUrl();
+
+	}
+
 	public Product() {
 		super();
 	}
@@ -134,6 +145,26 @@ public class Product implements Serializable {
 
 	public Set<Category> getCategories() {
 		return categories;
+	}
+
+	public Set<Supplier> getSuppliers() {
+		return suppliers;
+	}
+
+	public void setSuppliers(Set<Supplier> suppliers) {
+		this.suppliers = suppliers;
+	}
+
+	public Set<OrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<OrderItem> items) {
+		this.items = items;
+	}
+
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
 	}
 
 	@JsonIgnore

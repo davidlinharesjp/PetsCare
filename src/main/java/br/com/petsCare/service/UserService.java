@@ -43,7 +43,9 @@ public class UserService {
 	}
 
 	public User insert(User user) {
-		user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));
+		if(user.getKey_password() != null) {
+			user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));			
+		}
 		return userRepository.save(user);
 	}
 
