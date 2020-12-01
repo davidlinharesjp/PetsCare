@@ -23,6 +23,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb_supplier")
 @SequenceGenerator(name = "sq_supplier", sequenceName = "sq_supplier", initialValue = 1, allocationSize = 1)
@@ -51,6 +53,7 @@ public class Supplier implements Serializable {
 	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
 	private Address address;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "suppliers")
 	private Set<Product> products = new HashSet<>();
 
