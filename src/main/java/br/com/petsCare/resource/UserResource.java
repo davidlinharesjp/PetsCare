@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.petsCare.entities.User;
 import br.com.petsCare.entities.dto.UserDTO;
+import br.com.petsCare.entities.form.UserRegisterForm;
 import br.com.petsCare.service.UserService;
 
 @RestController
@@ -33,15 +34,15 @@ public class UserResource {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/findAll")
 	@GetMapping
+	@RequestMapping(value = "/findAll")
 	public ResponseEntity<List<UserDTO>> findAll() {
 		List<User> list = userService.findAll();
 		return ResponseEntity.ok().body(UserDTO.convert(list));
 	}
 
-	@RequestMapping(value = "/findAllPagination")
 	@GetMapping
+	@RequestMapping(value = "/findAllPagination")
 	@Cacheable(value = "listUsersPagination")//USER CACHE EM METODOS QE NÃO SERÃO MUITO ALTERADOS (updates , insert ou delete)
 	public ResponseEntity<Page<UserDTO>> findAllPagination(@RequestParam(required = false) String searchExpression,
 			@PageableDefault(sort = "id", direction = Direction.DESC,page = 1, size = 10) Pageable pagination) {
@@ -57,7 +58,6 @@ public class UserResource {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-
 		// User user1 = userService.getOne(id);
 		User user = userService.findById(id);
 		return ResponseEntity.ok().body(user);
@@ -77,6 +77,16 @@ public class UserResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/user/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(new UserDTO(user));
+	}
+	
+	@PostMapping(value = "/register")
+	@CacheEvict(value = "listUsersPagination", allEntries = true)
+	public ResponseEntity<UserDTO> register(@RequestBody UserRegisterForm userRegister){
+		UserDTO userDTO = userService.register(userRegister);
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/user/{id}").buildAndExpand(userDTO.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(userDTO);
 	}
 
 	@DeleteMapping(value = "/{id}")

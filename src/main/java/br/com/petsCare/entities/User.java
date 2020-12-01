@@ -32,6 +32,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.petsCare.entities.form.UserRegisterForm;
+
 @Entity
 @Table(name = "tb_user")
 @SequenceGenerator(name = "sq_user", sequenceName = "sq_user", initialValue = 1, allocationSize = 1)
@@ -87,6 +89,14 @@ public class User implements Serializable, UserDetails {
 		this.email = email;
 		this.phone = phone;
 		this.key_password = password;
+	}
+
+	public User(UserRegisterForm userReg) {
+		super();
+		this.id = userReg.getId();
+		this.name = userReg.getName();
+		this.email = userReg.getEmail();
+		this.key_password = userReg.getKey_password();
 	}
 
 	public void AddPet(Pet pet) {

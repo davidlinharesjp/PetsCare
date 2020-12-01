@@ -13,7 +13,6 @@ public class UserDTO {
 	private Long id;
 	private String name;
 	private String email;
-	private String phone;
 	private Boolean isAdmin;
 
 	public UserDTO(User user) {
@@ -21,12 +20,13 @@ public class UserDTO {
 		this.id = user.getId();
 		this.name = user.getName();
 		this.email = user.getEmail();
-		this.phone = user.getPhone();
 		checkProfile(user.getProfiles());
 	}
 
 	private void checkProfile(List<Profile> profiles) {
-		this.isAdmin = profiles.stream().anyMatch(p -> p.getName().equals("ADMIN"));
+		if (profiles != null) {
+			this.isAdmin = profiles.stream().anyMatch(p -> p.getName().equals("ADMIN"));
+		}
 	}
 
 	public Long getId() {
@@ -51,14 +51,6 @@ public class UserDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 
 	public Boolean getIsAdmin() {
