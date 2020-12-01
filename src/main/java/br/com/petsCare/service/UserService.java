@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.petsCare.entities.User;
+import br.com.petsCare.entities.dto.UserDTO;
+import br.com.petsCare.entities.form.UserRegisterForm;
 import br.com.petsCare.repository.UserRepository;
 import br.com.petsCare.service.exception.DatabaseException;
 import br.com.petsCare.service.exception.ResourceNotFoundException;
@@ -86,6 +88,16 @@ public class UserService {
 		user.setEmail(newUser.getEmail());
 		
 
+	}
+
+	public UserDTO register(UserRegisterForm userRegister) {
+		User user = new User (userRegister);
+		if(user.getKey_password() != null) {
+			user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));			
+		}
+		
+		user = userRepository.save(user);
+		return new UserDTO(user);
 	}
 
 }
