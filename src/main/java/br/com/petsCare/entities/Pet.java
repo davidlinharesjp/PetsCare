@@ -25,6 +25,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb_pet")
 @SequenceGenerator(name = "sq_pet", sequenceName = "sq_pet", initialValue = 1, allocationSize = 1)
