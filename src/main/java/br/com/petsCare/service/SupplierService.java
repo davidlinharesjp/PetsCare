@@ -57,7 +57,7 @@ public class SupplierService {
 
 	public Supplier update(Long id, Supplier newSupplier) {
 		try {
-			Supplier supplier = supplierRepository.getOne(id);
+			Supplier supplier = supplierRepository.findByID(id);
 			updateDate(supplier, newSupplier);
 			return supplierRepository.save(supplier);
 

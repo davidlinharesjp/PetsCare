@@ -53,6 +53,7 @@ public class Pet implements Serializable {
 
 	private String doctorName;
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "id_recommendation")
 	private Set<Recommendation> recommendations = new HashSet<>();

@@ -16,5 +16,8 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 	@Query("SELECT t FROM Supplier t WHERE t.name LIKE %:expression% OR t.phone LIKE %:expression%")
 	List<Supplier> searchExpressionSuppliers(@Param("expression") String expression);
 	
+	@Query("SELECT s FROM Supplier s WHERE s.id = :id")
+	Supplier findByID (@Param("id") Long id);
+	
 	Page<Supplier> findByNameContainsIgnoreCase(String name,Pageable pagination);
 }
