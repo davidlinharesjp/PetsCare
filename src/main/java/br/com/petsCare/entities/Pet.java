@@ -25,8 +25,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "tb_pet")
 @SequenceGenerator(name = "sq_pet", sequenceName = "sq_pet", initialValue = 1, allocationSize = 1)
@@ -55,8 +53,7 @@ public class Pet implements Serializable {
 
 	private String doctorName;
 
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_recommendation")
 	private Set<Recommendation> recommendations = new HashSet<>();
 
@@ -134,8 +131,8 @@ public class Pet implements Serializable {
 		return recommendations;
 	}
 
-	public void setRecommendations(Set<Recommendation> recommendations) {
-		this.recommendations = recommendations;
+	public void addRecomendations(Recommendation recommendations) {
+		this.recommendations.add(recommendations);
 	}
 
 	public Date getLastUpdate() {

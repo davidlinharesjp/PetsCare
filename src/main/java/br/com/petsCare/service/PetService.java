@@ -2,6 +2,7 @@ package br.com.petsCare.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -11,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.petsCare.entities.Pet;
+import br.com.petsCare.entities.Recommendation;
 import br.com.petsCare.repository.PetRepository;
 import br.com.petsCare.service.exception.DatabaseException;
 import br.com.petsCare.service.exception.ResourceNotFoundException;
@@ -51,7 +53,7 @@ public class PetService {
 
 	public Pet update(Long id, Pet newPet) {
 		try {
-			Pet pet = petRepository.getOne(id);
+			Pet pet = petRepository.findByID(id);
 			updateDate(pet, newPet);
 			return petRepository.save(pet);
 
@@ -66,7 +68,10 @@ public class PetService {
 		pet.setBirthday(newPet.getBirthday());
 		pet.setColor(newPet.getColor());
 		pet.setDoctorName(newPet.getDoctorName());
-		pet.setRecommendations(newPet.getRecommendations());
+		Set<Recommendation> list = newPet.getRecommendations();
+		if(!list.isEmpty() && list.size() > 0){
+			list.forEach(rec -> pet.addRecomendations(rec));			
+		}
 		pet.setSex(newPet.getSex());
 		pet.setUser(newPet.getUser());
 	}

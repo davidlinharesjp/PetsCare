@@ -1,11 +1,11 @@
 package br.com.petsCare.entities.dto;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import br.com.petsCare.entities.Category;
 import br.com.petsCare.entities.Product;
+import br.com.petsCare.entities.Supplier;
 
 //Classe de Recebimento do Producto
 public class ProductDTO {
@@ -22,7 +22,9 @@ public class ProductDTO {
 
 	private Double price;
 
-	private Set<Category> category = new HashSet<>();
+	private Set<Category> category;
+	
+	private Set<Supplier> supplier;
 
 	public ProductDTO(Product product) {
 		this.id = product.getId();
@@ -30,6 +32,9 @@ public class ProductDTO {
 		this.descricao = product.getDescription();
 		this.price = product.getPrice();
 		this.url = product.getImgUrl();
+		this.category = product.getCategories();
+		this.supplier = product.getSuppliers();
+		
 	}
 
 	public ProductDTO(Optional<Product> prodOp) {
@@ -37,6 +42,8 @@ public class ProductDTO {
 		this.name = prodOp.get().getName();
 		this.descricao = prodOp.get().getDescription();
 		this.url = prodOp.get().getImgUrl();
+		this.category = prodOp.get().getCategories();
+		this.supplier = prodOp.get().getSuppliers();
 	}
 
 	public Long getId() {
@@ -94,5 +101,15 @@ public class ProductDTO {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	public Set<Supplier> getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Set<Supplier> supplier) {
+		this.supplier = supplier;
+	}
+	
+	
 
 }

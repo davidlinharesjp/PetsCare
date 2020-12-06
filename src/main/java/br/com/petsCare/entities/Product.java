@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,13 +49,19 @@ public class Product implements Serializable {
 	@Column(name = "nm_url_img")
 	private String imgUrl;
 
-	@JsonIgnore
-	@ManyToMany
+	@Column
+	private Integer quantity;
+
+	@Column
+	private Double porcentagemVenda;
+	@Column
+	private Double porcentagemLucro;
+
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_category"))
 	private Set<Category> categories = new HashSet<>();
 
-	@JsonIgnore
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_product_suppliers", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_supplier"))
 	private Set<Supplier> suppliers = new HashSet<>();
 
@@ -76,13 +83,19 @@ public class Product implements Serializable {
 		this.lastUpdate = new Date();
 	}
 
-	public Product(Long id, String name, String description, Double price, String imgUrl) {
+	public Product(Long id, String name, String description, Double price, String imgUrl, Set<Category> categories, Set<Supplier> suppliers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.imgUrl = imgUrl;
+		if(!categories.isEmpty() && categories.size() > 0) {
+			categories.forEach(cat -> this.categories.add(cat));			
+		}
+		if(!suppliers.isEmpty() && suppliers.size() > 0 ) {
+			suppliers.forEach(sup -> this.suppliers.add(sup));
+		}
 	}
 
 	public Product(Optional<Product> prod) {
@@ -92,6 +105,12 @@ public class Product implements Serializable {
 		this.description = prod.get().getDescription();
 		this.price = prod.get().getPrice();
 		this.imgUrl = prod.get().getImgUrl();
+		if(!prod.get().categories.isEmpty() && prod.get().categories.size() > 0) {
+			prod.get().categories.forEach(cat -> this.categories.add(cat));			
+		}
+		if(!prod.get().suppliers.isEmpty() && prod.get().suppliers.size() > 0 ) {
+			prod.get().suppliers.forEach(sup -> this.suppliers.add(sup));
+		}
 
 	}
 
@@ -151,10 +170,6 @@ public class Product implements Serializable {
 		return suppliers;
 	}
 
-	public void setSuppliers(Set<Supplier> suppliers) {
-		this.suppliers = suppliers;
-	}
-
 	public Set<OrderItem> getItems() {
 		return items;
 	}
@@ -163,8 +178,40 @@ public class Product implements Serializable {
 		this.items = items;
 	}
 
-	public void setCategories(Set<Category> categories) {
-		this.categories = categories;
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPorcentagemVenda() {
+		return porcentagemVenda;
+	}
+
+	public void setPorcentagemVenda(Double porcentagemVenda) {
+		this.porcentagemVenda = porcentagemVenda;
+	}
+
+	public Double getPorcentagemLucro() {
+		return porcentagemLucro;
+	}
+
+	public void setPorcentagemLucro(Double porcentagemLucro) {
+		this.porcentagemLucro = porcentagemLucro;
+	}
+
+	public void addCategory(Category cat) {
+		if (cat != null) {
+			this.categories.add(cat);
+		}
+	}
+
+	public void addSupplier(Supplier sup) {
+		if (sup != null) {
+			this.suppliers.add(sup);
+		}
 	}
 
 	@JsonIgnore
