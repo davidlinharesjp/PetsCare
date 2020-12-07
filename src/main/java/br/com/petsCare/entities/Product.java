@@ -54,6 +54,7 @@ public class Product implements Serializable {
 
 	@Column
 	private Double porcentagemVenda;
+	
 	@Column
 	private Double porcentagemLucro;
 
@@ -83,17 +84,18 @@ public class Product implements Serializable {
 		this.lastUpdate = new Date();
 	}
 
-	public Product(Long id, String name, String description, Double price, String imgUrl, Set<Category> categories, Set<Supplier> suppliers) {
+	public Product(Long id, String name, String description, Double price, String imgUrl, Set<Category> categories,
+			Set<Supplier> suppliers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.imgUrl = imgUrl;
-		if(!categories.isEmpty() && categories.size() > 0) {
-			categories.forEach(cat -> this.categories.add(cat));			
+		if (!categories.isEmpty() && categories.size() > 0) {
+			categories.forEach(cat -> this.categories.add(cat));
 		}
-		if(!suppliers.isEmpty() && suppliers.size() > 0 ) {
+		if (!suppliers.isEmpty() && suppliers.size() > 0) {
 			suppliers.forEach(sup -> this.suppliers.add(sup));
 		}
 	}
@@ -105,10 +107,10 @@ public class Product implements Serializable {
 		this.description = prod.get().getDescription();
 		this.price = prod.get().getPrice();
 		this.imgUrl = prod.get().getImgUrl();
-		if(!prod.get().categories.isEmpty() && prod.get().categories.size() > 0) {
-			prod.get().categories.forEach(cat -> this.categories.add(cat));			
+		if (!prod.get().categories.isEmpty() && prod.get().categories.size() > 0) {
+			prod.get().categories.forEach(cat -> this.categories.add(cat));
 		}
-		if(!prod.get().suppliers.isEmpty() && prod.get().suppliers.size() > 0 ) {
+		if (!prod.get().suppliers.isEmpty() && prod.get().suppliers.size() > 0) {
 			prod.get().suppliers.forEach(sup -> this.suppliers.add(sup));
 		}
 

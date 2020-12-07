@@ -2,7 +2,6 @@ package br.com.petsCare.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -12,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.petsCare.entities.Pet;
-import br.com.petsCare.entities.Recommendation;
 import br.com.petsCare.repository.PetRepository;
 import br.com.petsCare.service.exception.DatabaseException;
 import br.com.petsCare.service.exception.ResourceNotFoundException;
@@ -31,7 +29,7 @@ public class PetService {
 		Optional<Pet> opPet = petRepository.findById(id);
 		return opPet.get();
 	}
-	
+
 	public Pet getOne(long id) {
 		try {
 			return petRepository.getOne(id);
@@ -60,18 +58,25 @@ public class PetService {
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
-		
+
 	}
 
+	/**
+	 * @param pet - Pet Cadastrado na Base
+	 * @param newPet - Pet a Alterar na Base
+	 * 
+	 * Recomenndações Faz a verificação se existe list 
+	 * no novo cadastro senão remove geral
+	 * 
+	 * E faz a verificação se existi lista nos dados novos
+	 * e faz a alteração de acordo com a existencia ou não 
+	 * */
 	private void updateDate(Pet pet, Pet newPet) {
 		pet.setName(newPet.getName());
 		pet.setBirthday(newPet.getBirthday());
 		pet.setColor(newPet.getColor());
 		pet.setDoctorName(newPet.getDoctorName());
-		Set<Recommendation> list = newPet.getRecommendations();
-		if(!list.isEmpty() && list.size() > 0){
-			list.forEach(rec -> pet.addRecomendations(rec));			
-		}
+		pet.updateRecomendation(newPet.getRecommendations());
 		pet.setSex(newPet.getSex());
 		pet.setUser(newPet.getUser());
 	}

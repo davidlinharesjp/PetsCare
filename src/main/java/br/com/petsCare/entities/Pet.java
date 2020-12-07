@@ -53,8 +53,8 @@ public class Pet implements Serializable {
 
 	private String doctorName;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_recommendation")
+	@OneToMany(cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(name="fk_user", referencedColumnName = "id_pet")
 	private Set<Recommendation> recommendations = new HashSet<>();
 
 	@Column(name = "ts_last_update", insertable = true, updatable = true)
@@ -133,6 +133,28 @@ public class Pet implements Serializable {
 
 	public void addRecomendations(Recommendation recommendations) {
 		this.recommendations.add(recommendations);
+	}
+
+	public void removeRecomendations() {
+		this.recommendations.removeAll(this.recommendations);
+	}
+
+	public void updateRecomendation(Set<Recommendation> recommendations) {
+		if (!recommendations.isEmpty() && recommendations.size() > 0) {
+			recommendations.forEach(rec -> {				
+				if (!this.recommendations.isEmpty() && this.recommendations.size() > 0) {
+					this.recommendations.forEach(oldRec -> {
+						if(rec.getId() == oldRec.getId()) {
+							oldRec.setName(rec.getName());							
+						}
+					});
+				} else {
+					this.addRecomendations(rec);
+				};
+			});
+		} else {
+			this.removeRecomendations();
+		}
 	}
 
 	public Date getLastUpdate() {
