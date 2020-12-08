@@ -28,8 +28,8 @@ public class ProductResource {
 	@Autowired
 	private ProductService productService;
 
-	@RequestMapping(value = "/findAll")
 	@GetMapping
+	@RequestMapping(value = "/findAll")
 	public ResponseEntity<List<Product>> findAll() {
 		List<Product> products = productService.findAll();
 		return ResponseEntity.ok().body(products);
@@ -66,8 +66,8 @@ public class ProductResource {
 
 	@PutMapping(value = "/{id}")
 	@CacheEvict(value = "listProductsPagination", allEntries = true)
-	public ResponseEntity<Product> update(@RequestBody Product product) {
-		product = productService.update(product);
+	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+		product = productService.update(product, id);
 		return ResponseEntity.ok().body(product);
 	}
 

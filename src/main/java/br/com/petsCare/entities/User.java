@@ -57,13 +57,6 @@ public class User implements Serializable, UserDetails {
 
 	private String key_password;
 
-	@JsonIgnore
-	@OneToMany(mappedBy = "user")
-	private List<Order> orders = new ArrayList<>();
-
-	@ManyToMany(fetch = FetchType.EAGER)
-	private List<Profile> profiles = new ArrayList<>();
-
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
 	private Address address;
@@ -71,7 +64,14 @@ public class User implements Serializable, UserDetails {
 	@Column(nullable = true, length = 20)
 	private String cpfCnpj;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<Order> orders = new ArrayList<>();
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Profile> profiles = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Pet> pets = new HashSet<>();
 
 	@Column(insertable = true, updatable = true)
@@ -99,10 +99,13 @@ public class User implements Serializable, UserDetails {
 		this.key_password = userReg.getKey_password();
 	}
 
-	public void AddPet(Pet pet) {
-		pets.add(pet);
-		pet.setUser(this);
-
+	public void AddPets(Set<Pet> pets) {
+		if (!pets.isEmpty() && pets.size() > 0) {
+			pets.forEach(pet -> {
+				this.pets.add(pet);
+				pet.setUser(this);
+			});
+		}
 	}
 
 	public void RemovePet(Pet pet) {
@@ -169,7 +172,7 @@ public class User implements Serializable, UserDetails {
 	}
 
 	public List<Order> getOrders() {
-		return orders;
+		return this.orders;
 	}
 
 	public void setOrders(List<Order> orders) {

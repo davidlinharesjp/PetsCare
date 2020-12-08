@@ -50,11 +50,8 @@ public class Product implements Serializable {
 	private String imgUrl;
 
 	@Column
-	private Integer quantity;
+	private Long quantity;
 
-	@Column
-	private Double porcentagemVenda;
-	
 	@Column
 	private Double porcentagemLucro;
 
@@ -84,7 +81,7 @@ public class Product implements Serializable {
 		this.lastUpdate = new Date();
 	}
 
-	public Product(Long id, String name, String description, Double price, String imgUrl, Set<Category> categories,
+	public Product(Long id, String name, String description, Double price, String imgUrl, Long quantity, Double porcentagemLucro, Set<Category> categories,
 			Set<Supplier> suppliers) {
 		super();
 		this.id = id;
@@ -92,6 +89,8 @@ public class Product implements Serializable {
 		this.description = description;
 		this.price = price;
 		this.imgUrl = imgUrl;
+		this.porcentagemLucro = porcentagemLucro;
+		this.quantity = quantity;
 		if (!categories.isEmpty() && categories.size() > 0) {
 			categories.forEach(cat -> this.categories.add(cat));
 		}
@@ -180,20 +179,12 @@ public class Product implements Serializable {
 		this.items = items;
 	}
 
-	public Integer getQuantity() {
+	public Long getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
-	}
-
-	public Double getPorcentagemVenda() {
-		return porcentagemVenda;
-	}
-
-	public void setPorcentagemVenda(Double porcentagemVenda) {
-		this.porcentagemVenda = porcentagemVenda;
 	}
 
 	public Double getPorcentagemLucro() {
@@ -213,6 +204,51 @@ public class Product implements Serializable {
 	public void addSupplier(Supplier sup) {
 		if (sup != null) {
 			this.suppliers.add(sup);
+		}
+	}
+
+	public void removeCategories() {
+		this.categories.removeAll(this.categories);
+	}
+
+	public void updateCategories(Set<Category> categories) {
+		if (!categories.isEmpty() && categories.size() > 0) {
+			categories.forEach(cat -> {
+				if (!this.categories.isEmpty() && this.categories.size() > 0) {
+					this.categories.forEach(oldCat -> {
+						if (cat.getId() == oldCat.getId()) {
+							oldCat.setName(cat.getName());
+						}
+					});
+				} else {
+					this.addCategory(cat);
+				}
+			});
+		} else {
+			this.removeCategories();
+		}
+	}
+
+	public void removeSuplier() {
+		this.suppliers.removeAll(this.suppliers);
+	}
+
+	public void updateSupplier(Set<Supplier> suppliers) {
+		if (!suppliers.isEmpty() && suppliers.size() > 0) {
+			suppliers.forEach(sup -> {
+				if (!this.suppliers.isEmpty() && this.suppliers.size() > 0) {
+					this.suppliers.forEach(oldSup -> {
+						if (sup.getId() == oldSup.getId()) {
+							oldSup = sup;
+						}
+					});
+				} else {
+					this.addSupplier(sup);
+				}
+				;
+			});
+		} else {
+			this.removeSuplier();
 		}
 	}
 

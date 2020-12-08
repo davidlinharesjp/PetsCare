@@ -44,12 +44,12 @@ public class Category implements Serializable {
 	private Set<Product> products = new HashSet<>();
 
 	@PrePersist
-	public void onInsert() {
+	private void onInsert() {
 		this.lastUpdate = new Date();
 	}
 
 	@PreUpdate
-	public void onUpdate() {
+	private void onUpdate() {
 		this.lastUpdate = new Date();
 	}
 

@@ -72,7 +72,7 @@ public class UserService {
 
 	public User update(Long id, User newUser) {
 		try {
-			User user = userRepository.getOne(id);
+			User user = userRepository.findByID(id);
 			updateDate(user, newUser);
 			return userRepository.save(user);
 
@@ -86,8 +86,10 @@ public class UserService {
 		user.setEmail(newUser.getEmail());
 		user.setPhone(newUser.getPhone());
 		user.setEmail(newUser.getEmail());
-		
-
+		user.setAddress(newUser.getAddress());
+		user.setCpfCnpj(newUser.getCpfCnpj());
+		user.AddPets(newUser.getPets());
+		user.setOrders(newUser.getOrders());
 	}
 
 	public UserDTO register(UserRegisterForm userRegister) {

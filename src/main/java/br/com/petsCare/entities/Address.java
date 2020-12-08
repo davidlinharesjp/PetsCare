@@ -40,6 +40,8 @@ public class Address {
 	private String complement;
 	private String nmState;
 	private String nmCity;
+	private String neighborhood;
+	private Long codigoPostal;
 
 	@Column(insertable = true, updatable = true)
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -125,6 +127,22 @@ public class Address {
 
 	public void setNmCity(String nmCity) {
 		this.nmCity = nmCity;
+	}
+
+	public String getNeighborhood() {
+		return neighborhood;
+	}
+
+	public void setNeighborhood(String neighborhood) {
+		this.neighborhood = neighborhood;
+	}
+
+	public Long getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(Long codigoPostal) {
+		this.codigoPostal = codigoPostal;
 	}
 
 	@Override

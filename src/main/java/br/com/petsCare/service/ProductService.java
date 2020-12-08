@@ -48,12 +48,24 @@ public class ProductService {
 		}
 	}
 
-	public Product update(Product product) {
+	public Product update(Product newProduct, Long id) {
 		try {
-			return productRepository.save(product);
+			Product oldProduct = findById(id);	
+			updateProduct(oldProduct, newProduct);			
+			return productRepository.save(oldProduct);
 		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(product.getId());
+			throw new ResourceNotFoundException(newProduct.getId());
 		}
+	}
+	
+	public void updateProduct(Product oldProd, Product newProduc) {
+		oldProd.setDescription(newProduc.getDescription());
+		oldProd.setName(newProduc.getName());
+		oldProd.setPorcentagemLucro(newProduc.getPorcentagemLucro());
+		oldProd.setPrice(newProduc.getPrice());
+		oldProd.setQuantity(newProduc.getQuantity());
+		oldProd.updateCategories(newProduc.getCategories());
+		oldProd.updateSupplier(newProduc.getSuppliers());		
 	}
 
 	public void delete(Long id) {
