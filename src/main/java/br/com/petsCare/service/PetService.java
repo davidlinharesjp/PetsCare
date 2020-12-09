@@ -79,6 +79,7 @@ public class PetService {
 		pet.updateRecomendation(newPet.getRecommendations());
 		pet.setSex(newPet.getSex());
 		pet.setUser(newPet.getUser());
+		pet.setRaca(newPet.getRaca());
 	}
 
 	public Pet insert(Pet pet) {

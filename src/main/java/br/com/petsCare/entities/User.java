@@ -57,7 +57,7 @@ public class User implements Serializable, UserDetails {
 
 	private String key_password;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
 	private Address address;
 
