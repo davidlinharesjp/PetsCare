@@ -3,10 +3,12 @@ package br.com.petsCare.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,11 +49,17 @@ public class Product implements Serializable {
 	@Column(name = "nm_url_img")
 	private String imgUrl;
 
-	@ManyToMany
+	@Column
+	private Long quantity;
+
+	@Column
+	private Double porcentagemLucro;
+
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_category"))
 	private Set<Category> categories = new HashSet<>();
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_product_suppliers", joinColumns = @JoinColumn(name = "fk_product"), inverseJoinColumns = @JoinColumn(name = "fk_supplier"))
 	private Set<Supplier> suppliers = new HashSet<>();
 
@@ -59,6 +67,7 @@ public class Product implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "id.product")
 	private Set<OrderItem> items = new HashSet<>();
 
@@ -72,13 +81,38 @@ public class Product implements Serializable {
 		this.lastUpdate = new Date();
 	}
 
-	public Product(Long id, String name, String description, Double price, String imgUrl) {
+	public Product(Long id, String name, String description, Double price, String imgUrl, Long quantity, Double porcentagemLucro, Set<Category> categories,
+			Set<Supplier> suppliers) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.imgUrl = imgUrl;
+		this.porcentagemLucro = porcentagemLucro;
+		this.quantity = quantity;
+		if (!categories.isEmpty() && categories.size() > 0) {
+			categories.forEach(cat -> this.categories.add(cat));
+		}
+		if (!suppliers.isEmpty() && suppliers.size() > 0) {
+			suppliers.forEach(sup -> this.suppliers.add(sup));
+		}
+	}
+
+	public Product(Optional<Product> prod) {
+		super();
+		this.id = prod.get().getId();
+		this.name = prod.get().getName();
+		this.description = prod.get().getDescription();
+		this.price = prod.get().getPrice();
+		this.imgUrl = prod.get().getImgUrl();
+		if (!prod.get().categories.isEmpty() && prod.get().categories.size() > 0) {
+			prod.get().categories.forEach(cat -> this.categories.add(cat));
+		}
+		if (!prod.get().suppliers.isEmpty() && prod.get().suppliers.size() > 0) {
+			prod.get().suppliers.forEach(sup -> this.suppliers.add(sup));
+		}
+
 	}
 
 	public Product() {
@@ -131,6 +165,91 @@ public class Product implements Serializable {
 
 	public Set<Category> getCategories() {
 		return categories;
+	}
+
+	public Set<Supplier> getSuppliers() {
+		return suppliers;
+	}
+
+	public Set<OrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<OrderItem> items) {
+		this.items = items;
+	}
+
+	public Long getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Long quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPorcentagemLucro() {
+		return porcentagemLucro;
+	}
+
+	public void setPorcentagemLucro(Double porcentagemLucro) {
+		this.porcentagemLucro = porcentagemLucro;
+	}
+
+	public void addCategory(Category cat) {
+		if (cat != null) {
+			this.categories.add(cat);
+		}
+	}
+
+	public void addSupplier(Supplier sup) {
+		if (sup != null) {
+			this.suppliers.add(sup);
+		}
+	}
+
+	public void removeCategories() {
+		this.categories.removeAll(this.categories);
+	}
+
+	public void updateCategories(Set<Category> categories) {
+		if (!categories.isEmpty() && categories.size() > 0) {
+			categories.forEach(cat -> {
+				if (!this.categories.isEmpty() && this.categories.size() > 0) {
+					this.categories.forEach(oldCat -> {
+						if (cat.getId() == oldCat.getId()) {
+							oldCat.setName(cat.getName());
+						}
+					});
+				} else {
+					this.addCategory(cat);
+				}
+			});
+		} else {
+			this.removeCategories();
+		}
+	}
+
+	public void removeSuplier() {
+		this.suppliers.removeAll(this.suppliers);
+	}
+
+	public void updateSupplier(Set<Supplier> suppliers) {
+		if (!suppliers.isEmpty() && suppliers.size() > 0) {
+			suppliers.forEach(sup -> {
+				if (!this.suppliers.isEmpty() && this.suppliers.size() > 0) {
+					this.suppliers.forEach(oldSup -> {
+						if (sup.getId() == oldSup.getId()) {
+							oldSup = sup;
+						}
+					});
+				} else {
+					this.addSupplier(sup);
+				}
+				;
+			});
+		} else {
+			this.removeSuplier();
+		}
 	}
 
 	@JsonIgnore

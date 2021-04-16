@@ -32,6 +32,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.petsCare.entities.form.UserRegisterForm;
+
 @Entity
 @Table(name = "tb_user")
 @SequenceGenerator(name = "sq_user", sequenceName = "sq_user", initialValue = 1, allocationSize = 1)
@@ -55,6 +57,13 @@ public class User implements Serializable, UserDetails {
 
 	private String key_password;
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
+	private Address address;
+
+	@Column(nullable = true, length = 20)
+	private String cpfCnpj;
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Order> orders = new ArrayList<>();
@@ -62,14 +71,7 @@ public class User implements Serializable, UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profiles = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "fk_address", referencedColumnName = "id_address")
-	private Address address;
-
-	@Column(nullable = true, length = 20)
-	private String cpfCnpj;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Pet> pets = new HashSet<>();
 
 	@Column(insertable = true, updatable = true)
@@ -89,10 +91,21 @@ public class User implements Serializable, UserDetails {
 		this.key_password = password;
 	}
 
-	public void AddPet(Pet pet) {
-		pets.add(pet);
-		pet.setUser(this);
+	public User(UserRegisterForm userReg) {
+		super();
+		this.id = userReg.getId();
+		this.name = userReg.getName();
+		this.email = userReg.getEmail();
+		this.key_password = userReg.getKey_password();
+	}
 
+	public void AddPets(Set<Pet> pets) {
+		if (!pets.isEmpty() && pets.size() > 0) {
+			pets.forEach(pet -> {
+				this.pets.add(pet);
+				pet.setUser(this);
+			});
+		}
 	}
 
 	public void RemovePet(Pet pet) {
@@ -159,7 +172,7 @@ public class User implements Serializable, UserDetails {
 	}
 
 	public List<Order> getOrders() {
-		return orders;
+		return this.orders;
 	}
 
 	public void setOrders(List<Order> orders) {

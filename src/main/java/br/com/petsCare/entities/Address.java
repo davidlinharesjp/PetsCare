@@ -26,23 +26,27 @@ public class Address {
 	@Column(name = "id_address", nullable = false)
 	private Long id;
 	private String cep;
-	
+
 	@ManyToOne
 	@JoinColumn(referencedColumnName = "id_state", name = "fk_state")
 	private State state;
-	
+
 	@ManyToOne
 	@JoinColumn(referencedColumnName = "id_city", name = "fk_city")
 	private City city;
-	
+
 	private String street;
 	private String number;
 	private String complement;
-	
+	private String nmState;
+	private String nmCity;
+	private String neighborhood;
+	private Long codigoPostal;
+
 	@Column(insertable = true, updatable = true)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date last_update;
-	
+
 	@PreUpdate
 	public void onUpdate() {
 		this.last_update = new Date();
@@ -109,6 +113,38 @@ public class Address {
 		this.complement = complement;
 	}
 
+	public String getNmState() {
+		return nmState;
+	}
+
+	public void setNmState(String nmState) {
+		this.nmState = nmState;
+	}
+
+	public String getNmCity() {
+		return nmCity;
+	}
+
+	public void setNmCity(String nmCity) {
+		this.nmCity = nmCity;
+	}
+
+	public String getNeighborhood() {
+		return neighborhood;
+	}
+
+	public void setNeighborhood(String neighborhood) {
+		this.neighborhood = neighborhood;
+	}
+
+	public Long getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(Long codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -169,8 +205,5 @@ public class Address {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
 }

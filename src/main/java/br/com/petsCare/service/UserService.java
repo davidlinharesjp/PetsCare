@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.petsCare.entities.User;
+import br.com.petsCare.entities.dto.UserDTO;
+import br.com.petsCare.entities.form.UserRegisterForm;
 import br.com.petsCare.repository.UserRepository;
 import br.com.petsCare.service.exception.DatabaseException;
 import br.com.petsCare.service.exception.ResourceNotFoundException;
@@ -43,7 +45,9 @@ public class UserService {
 	}
 
 	public User insert(User user) {
-		user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));
+		if(user.getKey_password() != null) {
+			user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));			
+		}
 		return userRepository.save(user);
 	}
 
@@ -68,7 +72,7 @@ public class UserService {
 
 	public User update(Long id, User newUser) {
 		try {
-			User user = userRepository.getOne(id);
+			User user = userRepository.findByID(id);
 			updateDate(user, newUser);
 			return userRepository.save(user);
 
@@ -82,8 +86,20 @@ public class UserService {
 		user.setEmail(newUser.getEmail());
 		user.setPhone(newUser.getPhone());
 		user.setEmail(newUser.getEmail());
-		
+		user.setAddress(newUser.getAddress());
+		user.setCpfCnpj(newUser.getCpfCnpj());
+		user.AddPets(newUser.getPets());
+		user.setOrders(newUser.getOrders());
+	}
 
+	public UserDTO register(UserRegisterForm userRegister) {
+		User user = new User (userRegister);
+		if(user.getKey_password() != null) {
+			user.setKey_password(new BCryptPasswordEncoder().encode(user.getKey_password()));			
+		}
+		
+		user = userRepository.save(user);
+		return new UserDTO(user);
 	}
 
 }

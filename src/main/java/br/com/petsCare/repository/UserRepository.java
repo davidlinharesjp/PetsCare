@@ -16,6 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("SELECT t FROM User t WHERE t.name LIKE %:expression% OR t.phone LIKE %:expression% OR t.email LIKE %:expression% ")
 	List<User> searchExpressionUsers(@Param("expression") String expression);
 
+	@Query("SELECT t FROM User t WHERE t.id = :id ")
+	User findByID(@Param("id") Long id);
+
+	
 	Page<User> findByNameContainsIgnoreCase(String name, Pageable pagination);
 
 	Optional<User> findByEmail(String email);

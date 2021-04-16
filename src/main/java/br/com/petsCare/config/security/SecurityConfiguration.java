@@ -34,7 +34,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {
-		// TODO Auto-generated method stub
 		return super.authenticationManager();
 	}
 
@@ -52,9 +51,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/user/findAll").permitAll()
 				.antMatchers(HttpMethod.GET, "/user/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/address/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/user/register").permitAll()				
 				.antMatchers(HttpMethod.POST, "/user/").permitAll()				
 				.antMatchers(HttpMethod.POST, "/auth").permitAll()
-				.antMatchers(HttpMethod.DELETE, "/user/*").hasRole("ADMIN")
+//				.antMatchers(HttpMethod.DELETE, "/user/*").hasRole("ADMIN")
 				.anyRequest().authenticated().and().cors().and().csrf().disable().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().addFilterBefore(new AuthenticationTokenFilter(tokenService, userService),  UsernamePasswordAuthenticationFilter.class);

@@ -25,6 +25,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb_pet")
 @SequenceGenerator(name = "sq_pet", sequenceName = "sq_pet", initialValue = 1, allocationSize = 1)
@@ -42,6 +44,7 @@ public class Pet implements Serializable {
 
 	private String sex;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
@@ -53,8 +56,10 @@ public class Pet implements Serializable {
 
 	private String doctorName;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "id_recommendation")
+	private String Raca;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "fk_user", referencedColumnName = "id_pet")
 	private Set<Recommendation> recommendations = new HashSet<>();
 
 	@Column(name = "ts_last_update", insertable = true, updatable = true)
@@ -127,12 +132,43 @@ public class Pet implements Serializable {
 		this.sex = sex;
 	}
 
+	public String getRaca() {
+		return Raca;
+	}
+
+	public void setRaca(String raca) {
+		Raca = raca;
+	}
+
 	public Set<Recommendation> getRecommendations() {
 		return recommendations;
 	}
 
-	public void setRecommendations(Set<Recommendation> recommendations) {
-		this.recommendations = recommendations;
+	public void addRecomendations(Recommendation recommendations) {
+		this.recommendations.add(recommendations);
+	}
+
+	public void removeRecomendations() {
+		this.recommendations.removeAll(this.recommendations);
+	}
+
+	public void updateRecomendation(Set<Recommendation> recommendations) {
+		if (!recommendations.isEmpty() && recommendations.size() > 0) {
+			recommendations.forEach(rec -> {
+				if (!this.recommendations.isEmpty() && this.recommendations.size() > 0) {
+					this.recommendations.forEach(oldRec -> {
+						if (rec.getId() == oldRec.getId()) {
+							oldRec.setName(rec.getName());
+						}
+					});
+				} else {
+					this.addRecomendations(rec);
+				}
+				;
+			});
+		} else {
+			this.removeRecomendations();
+		}
 	}
 
 	public Date getLastUpdate() {
